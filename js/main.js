@@ -1,3 +1,19 @@
+const initSmoothScroll = () => {
+  if (typeof Lenis === "undefined") return null;
+
+  return new Lenis({
+    autoRaf: true,
+    duration: 0.75,
+    wheelMultiplier: 1,
+    smoothWheel: true,
+    syncTouch: false,
+    anchors: {
+      duration: 0.75,
+    },
+    respectReducedMotion: true,
+  });
+};
+
 const initHeroSwiper = () => {
   const hero = document.querySelector(".hero-swiper");
 
@@ -360,7 +376,7 @@ const initRankingSlider = () => {
   });
 };
 
-const initTopButton = () => {
+const initTopButton = (lenis) => {
   const topButton = document.querySelector("#footer .top-button");
   const hero = document.querySelector("#hero");
   const footer = document.querySelector("#footer");
@@ -392,10 +408,12 @@ const initTopButton = () => {
   topButton.addEventListener("click", (event) => {
     event.preventDefault();
 
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth",
-    });
+    if (lenis) {
+      lenis.scrollTo(0, { duration: 0.75 });
+      return;
+    }
+
+    window.scrollTo({ top: 0 });
   });
 
   window.addEventListener("scroll", requestTopButtonUpdate, { passive: true });
@@ -404,6 +422,8 @@ const initTopButton = () => {
 };
 
 (() => {
+  const lenis = initSmoothScroll();
+
   initSectionReveal();
   initHeroSwiper();
   initHeroControl();
@@ -412,5 +432,5 @@ const initTopButton = () => {
   initLiveSlider();
   initLiveCountdown();
   initRankingSlider();
-  initTopButton();
+  initTopButton(lenis);
 })();
